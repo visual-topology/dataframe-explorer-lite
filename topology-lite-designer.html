@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title id="title">Skadi - </title>
+
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+        <link href="3pp/exo/exo.css" rel="stylesheet" type="text/css">
+        <link href="3pp/exo/exo-icons.css" rel="stylesheet" type="text/css">
+        <script src="3pp/exo/exo.js"></script>
+
+        <script src="3pp/zip/zip.min.js"></script>
+
+        <script src="3pp/skadi/skadi-designer.js" type="application/ecmascript" charset="utf-8"></script>
+        <script src="topology-lite-designer.js" type="application/ecmascript" charset="utf-8"></script>
+        <link rel="styleSheet" href="3pp/skadi/skadi-designer.css" type="text/css">
+        <link rel="icon" type="image/svg" href="images/visual_topology_lite.svg">
+        <script>
+            window.addEventListener("load",async (evt) => {
+                let url_params = new URLSearchParams(window.location.search);
+                let topology_id = url_params.get("topology_id");
+                if (!topology_id) {
+                    // redirect to directory to select or create a topology
+                    window.location.replace("topology-lite-directory.html");
+                }
+
+                fetch("options.json").then(r => r.json()).then(async options => {
+                    let designer_lite = new visualtopology_lite.TopologyDesignerLite(
+                        topology_id, "skadi_container", options
+                    );
+                    await designer_lite.init();
+                    let splash = document.getElementById("splash_screen");
+                    if (splash) {
+                        setTimeout(() => {
+                           splash.setAttribute("display", "false");
+                        }, 2000);
+                    }
+                });
+            });
+        </script>
+    </head>
+
+    <body onload="">
+        <div id="splash_screen" is="exo-modal" display="true"
+             bg-color="light-gray" border-color="dark-purple" style="width:50%; height:50%;">
+             <h1>
+            Topology Designer Lite
+            </h1>
+            <p>
+                <img src="images/visual_topology_lite.svg">
+                Loading...
+            </p>
+        </div>
+        <div id="skadi_container" class="skadi_container">
+        </div>
+    </body>
+</html>

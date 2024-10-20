@@ -1,0 +1,9 @@
+{
+    "languages": {
+        "en": {
+            "name": "English",
+            "bundle_url": "en.json"
+        }
+    },
+    "default_language": "en"
+}

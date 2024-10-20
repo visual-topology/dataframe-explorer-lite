@@ -1,0 +1,27 @@
+html {
+    height: 99%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+}
+
+#flexroot {
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    height:100%;
+    margin:0px;
+}
+
+#vizdiv {
+    flex-grow: 1.0;
+}
+
+.vega-actions a {
+    margin-left: 20px;
+}
+

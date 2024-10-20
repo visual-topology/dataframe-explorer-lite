@@ -1,0 +1,7 @@
+{
+  "schema_urls": ["packages/dataframe-explorer/schema.json"],
+  "title": "Dataframe Explorer - Visual Topology Lite Application",
+  "canvas_height": 2000,
+  "canvas_width": 4000,
+  "workspace": "dataframe_explorer"
+}

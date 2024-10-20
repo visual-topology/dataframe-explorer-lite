@@ -1,0 +1,431 @@
+{
+    "id": "dataframe_explorer",
+    "metadata": {
+        "name": "DataFrame Explorer Example Package",
+        "version": "0.0.1",
+        "description": "A simple example package for building data visualizations",
+        "link": "about.html"
+    },
+    "display": {
+        "style": "fill:lightgrey;"
+    },
+    "executor": "javascript",
+    "configuration": {
+        "classname": "DataFrameExplorer.Configuration",
+        "pages": {
+            "default": {
+                "button_label": "Configure...",
+                "title": "Dataframe Explorer Configuration",
+                "url": "configuration.html"
+            }
+        }
+    },
+    "l10n": {
+        "languages": {
+            "en": {
+                "name": "English",
+                "bundle_url": "l10n/en.json"
+            },
+            "fr": {
+                "name": "French",
+                "bundle_url": "l10n/fr.json"
+            }
+        },
+        "default_language": "en"
+    },
+    "resources": [ "https://cdn.jsdelivr.net/npm/arquero@4.8.6/dist/arquero.min.js", "configuration.js","nodes/aq_utils.js", "nodes/chart.js" ],
+    "node_types": {
+        "csv_import": {
+            "metadata": {
+                "name": "CSV Reader",
+                "description": "Select a CSV file and load it into a dataset"
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/csv_import.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label":"Open...",
+                    "title": "CSV Import",
+                    "url": "nodes/csv_import.html",
+                    "window_width": 500,
+                    "window_height": 300
+                }
+            },
+            "classname": "DataFrameExplorer.CsvImportNode",
+            "resources": ["nodes/csv_import.js"]
+        },
+        "data_retyper": {
+            "metadata": {
+                "name": "Data Retyper",
+                "description": "Inspect and change the column types"
+            },
+            "input_ports": {
+                "data_in": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/data_retyper.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label":"Open...",
+                    "title": "Retype Columns",
+                    "url": "nodes/data_retyper.html",
+                    "window_width": 800,
+                    "window_height": 600
+                }
+            },
+            "classname": "DataFrameExplorer.DataRetyperNode",
+            "resources": ["nodes/data_retyper.js"]
+        },
+        "sample_rows": {
+            "metadata": {
+                "name": "Sample",
+                "description": "Select a sample from the input dataset"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/filter_random.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Sample Rows",
+                    "url": "nodes/sample_rows.html",
+                    "window_width": 500,
+                    "window_height": 300
+                }
+            },
+            "classname": "DataFrameExplorer.SampleRowsNode",
+            "resources": ["nodes/sample_rows.js"]
+        },
+        "select_rows": {
+            "metadata": {
+                "name": "Select Rows",
+                "description": "Select Rows by Category or Numeric Range"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/select_rows.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Select Rows",
+                    "url": "nodes/select_rows.html",
+                    "window_width": 600,
+                    "window_height": 600
+                }
+            },
+            "classname": "DataFrameExplorer.SelectRowsNode",
+            "resources": ["nodes/select_rows.js"]
+        },
+        "join_rows": {
+            "metadata": {
+                "name": "Join Rows",
+                "description": "Join rows from multiple inputs"
+            },
+            "input_ports": {
+                "data_in1": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                },
+                "data_in2": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/join_rows.svg"
+            },
+             "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Join Rows",
+                    "url": "nodes/join_rows.html",
+                    "window_width": 600,
+                    "window_height": 600
+                }
+            },
+            "classname": "DataFrameExplorer.JoinRowsNode",
+            "resources": ["nodes/join_rows.js"]
+        },
+         "select_columns": {
+            "metadata": {
+                "name": "Select Columns",
+                "description": "Select a subset of columns"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/select_columns.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Select Columns",
+                    "url": "nodes/select_columns.html",
+                    "window_width": 600,
+                    "window_height": 600
+                }
+            },
+            "classname": "DataFrameExplorer.SelectColumnsNode",
+            "resources": ["nodes/select_columns.js"]
+        },
+        "create_column": {
+            "metadata": {
+                "name": "Create Column",
+                "description": "Create a new column"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "output_ports": {
+                "data_out": {
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/create_column.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Create Column",
+                    "url": "nodes/create_column.html"
+                }
+            },
+            "classname": "DataFrameExplorer.CreateColumnNode",
+            "resources": ["nodes/create_column.js"]
+        },
+        "table_display": {
+            "metadata": {
+                "name": "Table Display",
+                "description": "Display a dataset in a table"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 7,
+                "icon": "icons/table.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Table",
+                    "url": "nodes/table_display.html",
+                    "window_width": 800,
+                    "window_height": 600
+                }
+            },
+            "classname": "DataFrameExplorer.TableDisplayNode",
+            "resources": ["nodes/table_display.js"]
+        },
+        "scatter_plot": {
+            "metadata": {
+                "name": "Scatter Plot",
+                "description": "Plot points for each data item"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/scatter.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Scatter Plot",
+                    "window_width": 800,
+                    "window_height": 600,
+                    "url": "nodes/scatter_plot.html"
+                }
+            },
+            "classname": "DataFrameExplorer.ScatterPlotNode",
+            "resources": ["nodes/scatter_plot.js"]
+        },
+        "bar_chart": {
+            "metadata": {
+                "name": "Bar Chart",
+                "description": "Draw a Bar Chart"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/bar.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Bar Chart",
+                    "window_width": 800,
+                    "window_height": 600,
+                    "url": "nodes/bar_chart.html"
+                }
+            },
+            "classname": "DataFrameExplorer.BarChartNode",
+            "resources": ["nodes/bar_chart.js"]
+        },
+        "timeseries_plot": {
+            "metadata": {
+                "name": "Time Series Plot",
+                "description": "Plot lines for one or more time series"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/line.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Time Series",
+                    "window_width": 800,
+                    "window_height": 600,
+                    "url": "nodes/timeseries_plot.html"
+                }
+            },
+            "classname": "DataFrameExplorer.TimeSeriesPlotNode",
+            "resources": ["nodes/timeseries_plot.js"]
+        },
+        "2d_histogram_plot": {
+            "metadata": {
+                "name": "2D Histogram Plot",
+                "description": "Draw a 2D Histogram Plot"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/2d_histogram.svg"
+            },
+             "pages": {
+                "default": {
+                    "menu_label":"Open...",
+                    "title": "2D Histogram",
+                    "window_width": 800,
+                    "window_height": 800,
+                    "url": "nodes/2d_histogram_plot.html"
+                }
+            },
+            "classname": "DataFrameExplorer.Histogram2DPlotNode",
+            "resources": ["nodes/2d_histogram_plot.js"]
+        },
+        "histogram_plot": {
+            "metadata": {
+                "name": "Histogram Plot",
+                "description": "Draw a Histogram"
+            },
+            "input_ports": {
+                "data_in": {
+                    "allow_multiple_connections": false,
+                    "link_type": "dataframe_explorer:dataset"
+                }
+            },
+            "display": {
+                "corners": 5,
+                "icon": "icons/histogram.svg"
+            },
+            "pages": {
+                "default": {
+                    "menu_label": "Open...",
+                    "title": "Histogram",
+                    "window_width": 800,
+                    "window_height": 800,
+                    "url": "nodes/histogram_plot.html"
+                }
+             },
+            "classname": "DataFrameExplorer.HistogramPlotNode",
+            "resources": ["nodes/histogram_plot.js"]
+        }
+    },
+    "link_types": {
+        "dataset": {
+            "metadata": {
+                "name": "Dataset",
+                "description": "Dataset holding tabular (rows and columns) data"
+            },
+            "display": {
+                "colour": "green"
+            }
+        }
+    }
+}

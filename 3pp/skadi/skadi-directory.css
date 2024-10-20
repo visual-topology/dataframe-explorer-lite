@@ -1,0 +1,30 @@
+/* src/css/directory.css */
+.treeselect {
+    width: 16px !important;
+    height: 16px !important;
+    min-height: 16px !important;
+    vertical-align: middle;
+    float:right;
+    appearance: auto !important;
+}
+
+.treeicon {
+    width: 24px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.open_link {
+    margin-left: 20px;
+}
+
+.skadi_metadata_table {
+    border: none;
+}
+
+.skadi_metadata_table tr,td {
+    border: none;
+}
+
+

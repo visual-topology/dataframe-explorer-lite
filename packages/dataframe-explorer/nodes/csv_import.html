@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link href="../../../3pp/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="../../../3pp/exo/exo.js" type="text/javascript"></script>
+    <link href="../../../3pp/exo/exo.css" rel="stylesheet" type="text/css">
+    <script src="../../../3pp/skadi/skadi-page.js" type="text/javascript"></script>
+</head>
+<body>
+    <input id="use_example" type="radio" name="upload_type"
+           value="example" checked="checked">
+    <label for="use_example" style="display:inline-block;">
+        <span class="label-body">
+            Select example dataset
+        </span>
+        <select id="select_example_dataset">
+            <option value="iris">Iris</option>
+            <option value="drug-use-by-age">Drug Use By Age</option>
+        </select>
+    </label>
+    <br>
+    <input id="use_custom" type="radio" name="upload_type" value="upload">
+    <label for="use_custom" style="display:inline-block;">
+        <span class="label-body">
+            Upload a new CSV file
+        </span>
+    </label>
+    <div id="upload_section" style="display:none;">
+        <p style="margin-left: 32px;">
+            <exo-file tooltip="Select a CSV formatted file from your computer to upload" button-text="Upload file" id="upload" filename="filename.csv"></exo-file>
+        </p>
+    </div>
+    <script>
+        window.addEventListener("load", evt => {
+           let upload = document.getElementById("upload");
+           upload.addEventListener("exo-file-changed", (evt) => {
+               let files = evt.detail;
+               for(let filename in files) {
+                   let f = files[filename];
+                   f.text().then(text => {
+                       skadi.page.send_message({"filename": filename}, text);
+                   });
+               }
+            });
+        });
+    </script>
+</body>
+</html>

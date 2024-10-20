@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <link href="../../../3pp/exo/exo.css" rel="stylesheet" type="text/css">
+    <link href="../../../3pp/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="../../../3pp/exo/exo.js" type="text/javascript"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.6.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.2"></script>
+
+    <script src="../../../3pp/skadi/skadi-page.js" type="text/javascript"></script>
+
+    <link href="chart_layout.css" rel="stylesheet" type="text/css">
+    <script src="chart_page.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="flexroot">
+        <div class="exo-row">
+            <div class="exo-2-cell">
+                <exo-select id="x_axis" label="X-Axis">
+                </exo-select>
+            </div>
+            <div class="exo-2-cell">
+                <exo-select id="y_axis" label="Y-Axis">
+                </exo-select>
+            </div>
+            <div class="exo-2-cell">
+                <exo-select id="hue" label="Hue">
+                </exo-select>
+            </div>
+            <div class="exo-1-cell">
+                <label for="edit_labels" style="margin-top:0px;">Labels</label>
+                <div is="exo-modal" rounded="small" border-color="dark-gray" button-bg-color="light-gray"
+                            id="edit_labels" button-text="Edit...">
+                    <div style="padding:30px;">
+                        <h4>Labels</h4>
+                        <div class="exo-2-cell"><exo-text label="Title" id="title_label" full_width="true"></exo-text></div>
+                        <div class="exo-2-cell"><exo-text label="X-Axis" id="x_axis_label" full_width="true"></exo-text></div>
+                        <div class="exo-2-cell"><exo-text label="Y-Axis" id="y_axis_label" full_width="true"></exo-text></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="vizdiv">
+        </div>
+    </div>
+</body>
+</html>
