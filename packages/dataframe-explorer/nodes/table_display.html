@@ -6,38 +6,50 @@
 
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-    <link href="../../../3pp/exo/exo.css" rel="stylesheet" type="text/css">
-    <link href="../../../3pp/exo/exo-icons.css" rel="stylesheet" type="text/css">
-    <script src="../../../3pp/exo/exo.js" type="text/javascript"></script>
+    <link href="../../../skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+    <link href="../../../skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="../../../skadi/lib/exo/exo.js" type="text/javascript"></script>
 
-    <script src="../../../3pp/skadi/skadi-page.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridjs/6.0.6/theme/mermaid.min.css" integrity="sha512-RDGsJLRkCwPeXuxmopxZ0srNhRpZf3CGGPsCNZRBJOwhbgrXAcJn12Ihu9FQaf2V/MI22oUNhyQ0bDH/J9p1gA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gridjs/6.0.6/gridjs.production.min.js" integrity="sha512-wpiJjuL800CTEBA0QFs+RFw0tFtpXnQGea1p9S16WcYNXC1F3U0l1L7FQrDC3ihkYRtOj4Td7lKR3mYKxrwMMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../../../skadi/skadi-page.js" type="text/javascript"></script>
+    <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js" type="text/javascript"></script>
     <script>
         var dataset = undefined;
         var columns = undefined;
 
+        function clean_nulls(dataset) {
+            for(let r=0; r<dataset.length; r +=1) {
+                let row = dataset[r];
+                for(let c=0; c<row.length; c +=1) {
+                    if (row[c] === null || row[c] === undefined) {
+                        row[c] = "";
+                    }
+                }
+            }
+        }
+
         function render_table() {
-            let elt = document.getElementById("table");
-            elt.innerHTML = "<div id=\"table_content\"></div>";
+            let elt = document.getElementById("table_container");
+            elt.innerHTML = "<table id=\"table_content\" class=\"display\" width=\"100%\"></table>";
             if (dataset && columns) {
-                let content_elt = document.getElementById("table_content");
-                const grid = new gridjs.Grid({
-                    search: true,
-                    columns: columns,
-                    sort:true,
-                    pagination: { limit: 5 },
+                let cols = [];
+                for(let idx=0; idx<columns.length; idx++) {
+                    cols.push({"title":columns[idx]});
+                }
+                new DataTable('#table_content', {
+                    order: [],
+                    columns: cols,
                     data: dataset
-                }).render(content_elt);
+                });
             }
         }
 
         skadi.page.set_message_handler((msg) => {
             if ("data" in msg) {
                 dataset = msg.data;
+                clean_nulls(dataset);
                 columns = msg.columns;
-            } else if ("resize" in msg) {
-                /* redisplay current dataset */
             } else {
                 dataset = undefined;
                 columns = undefined;
@@ -51,8 +63,7 @@
 </script>
 </head>
 <body>
-    <div id="table">
-        <div id="table_content"></div>
+    <div id="table_container">
     </div>
 </div>
 </body>

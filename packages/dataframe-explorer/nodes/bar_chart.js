@@ -20,7 +20,7 @@ DataFrameExplorer.BarChartNode = class extends DataFrameExplorer.ChartNode {
     set hue(v) { this.node_service.set_property("hue",v); }
 
     valid() {
-        let column_names = this.get_input_dataset().columnNames();
+        let column_names = this.dataset.columns;
         if (column_names.includes(this.x_axis)) {
             if (this.hue === "" || column_names.includes(this.hue)) {
                 return true;
@@ -32,7 +32,7 @@ DataFrameExplorer.BarChartNode = class extends DataFrameExplorer.ChartNode {
     refresh_controls() {
         let column_names = [];
         if (this.dataset) {
-            column_names = this.dataset.columnNames();
+            column_names = this.dataset.columns;
         }
         this.set_selector_options("x_axis", column_names);
         this.set_selector_options("hue", column_names);
@@ -43,7 +43,7 @@ DataFrameExplorer.BarChartNode = class extends DataFrameExplorer.ChartNode {
         let spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
             "description": "A scatterplot.",
-            "data": {"format": {"type": "csv"}},
+            "data": {"format": {"type": "json"}},
             "mark": "bar",
             "padding": 20,
             "autosize": {

@@ -32,10 +32,6 @@ DataFrameExplorer.ChartNode = class {
     get y_axis_label() { return this.node_service.get_property("y_axis_label",""); }
     set y_axis_label(v) { this.node_service.set_property("y_axis_label",v); }
 
-    get_input_dataset() {
-        return this.dataset;
-    }
-
     bind_controls() {
         this.label_control_names.forEach(control_name => {
             this.bind_label_control(control_name, this.node_service.get_property(control_name,""));
@@ -110,7 +106,7 @@ DataFrameExplorer.ChartNode = class {
 
     upload() {
         if (this.page_is_open() && !this.data_uploaded) {
-            this.client_service.send_message({"dataset": this.dataset.toCSV()});
+            this.client_service.send_message({"dataset": this.dataset});
             this.data_uploaded = true;
         }
     }
@@ -139,7 +135,21 @@ DataFrameExplorer.ChartNode = class {
 
     async run(inputs) {
         if (inputs["data_in"]) {
-            this.dataset = inputs["data_in"][0];
+            this.dataset = null;
+            let pyodide_config = this.node_service.get_configuration("visualtopology.pyodide");
+            let pyodide = await pyodide_config.get_pyodide();
+            let config = this.node_service.get_configuration();
+            let db = await config.get_duckdb_database();
+            let query = inputs["data_in"][0];
+            let my_namespace = pyodide.toPy({ db: db, query: query });
+            let dataset_proxy = await pyodide.runPythonAsync(` 
+                    sql = query.get_sql(db)     
+                    rs = db.run_query(sql, convert_datetimes=True)
+                    rs
+            `,{globals:my_namespace});
+            this.dataset = { "data": dataset_proxy.get("data").toJs(), "columns": dataset_proxy.get("columns").toJs(),
+                "column_types": dataset_proxy.get("column_types").toJs()};
+            config.postprocess_dataset(this.dataset);
         } else {
             this.dataset = null;
         }

@@ -16,35 +16,11 @@ DataFrameExplorer.TableDisplayNode = class {
         this.refresh();
     }
 
-    export_table() {
-        if (this.dataset) {
-            let col_json = JSON.parse(this.dataset.toJSON({ schema: false }));
-            let columns = [];
-            for (let column in col_json) {
-                columns.push(column);
-            }
-            let data = [];
-            if (columns.length > 0) {
-                let row_count = col_json[columns[0]].length;
-                for(let idx=0; idx<row_count; idx++) {
-                    let row = [];
-                    columns.forEach(column => {
-                        row.push(col_json[column][idx]);
-                    });
-                    data.push(row);
-                }
-            }
-            return { "columns":columns, "data":data };
-        } else {
-            return {};
-        }
-    }
-
     refresh() {
         if (this.dataset) {
-            this.node_service.set_status_info(""+this.dataset.numRows()+" Rows");
+            this.node_service.set_status_info(""+this.dataset.data.length+" Rows");
             if (this.client_service) {
-                this.client_service.send_message(this.export_table());
+                this.client_service.send_message(this.dataset);
             }
         } else {
             if (this.client_service) {
@@ -70,10 +46,27 @@ DataFrameExplorer.TableDisplayNode = class {
 
     async run(inputs) {
         if (inputs["data_in"]) {
-            this.dataset = inputs["data_in"][0];
+            this.dataset = null;
+            let pyodide_config = this.node_service.get_configuration("visualtopology.pyodide");
+            let pyodide = await pyodide_config.get_pyodide();
+            let config = this.node_service.get_configuration();
+            let db = await config.get_duckdb_database();
+            let query = inputs["data_in"][0];
+
+            let my_namespace = pyodide.toPy({ db: db, query: query });
+            let dataset_proxy = await pyodide.runPythonAsync(`      
+                    sql = query.get_sql(db)
+                    rs = db.run_query(sql,convert_datetimes=True)
+                    rs
+            `,{globals:my_namespace});
+            this.dataset = { "data": dataset_proxy.get("data").toJs(), "columns": dataset_proxy.get("columns").toJs(),
+                "column_types": dataset_proxy.get("column_types").toJs()};
+            config.postprocess_dataset(this.dataset);
         } else {
             this.dataset = null;
         }
+
+        console.log(this.dataset["data"].slice(0,20));
         this.refresh();
         if (this.dataset) {
             return {};

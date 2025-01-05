@@ -22,27 +22,32 @@ DataFrameExplorer.SelectColumnsNode = class {
     set column_names(v) { this.node_service.set_property("column_names",v); }
 
     update_status() {
-        if (this.is_reset_run) {
-            this.node_service.set_status_info("Reloading...");
+        if (this.valid()) {
+            this.node_service.set_status_info(this.column_names.length+" Columns");
         } else {
-            if (this.valid()) {
-                this.node_service.set_status_info("" + this.column_names.length);
-            } else {
-                this.node_service.set_status_error("invalid");
-            }
+            this.node_service.set_status_error("Select Columns...");
         }
     }
 
-    input_changed() {
-        this.input_column_names = [];
-        if (this.dataset) {
-            this.input_column_names = this.dataset.columnNames();
-        }
+    async input_changed(input_query) {
+        let pyodide_config = this.node_service.get_configuration("visualtopology.pyodide");
+        let pyodide = await pyodide_config.get_pyodide();
+        let config = this.node_service.get_configuration();
+        let db = await config.get_duckdb_database();
+        let my_namespace = pyodide.toPy({ db: db, input_query: input_query });
+        let r = await pyodide.runPythonAsync(`      
+                sql = input_query.get_sql(db)
+                schema = db.check_schema(sql)
+                r = {"column_names":[name for (name,_) in schema]}
+                r
+        `,{globals:my_namespace});
+        this.input_column_names = r.get("column_names").toJs();
+        console.log(JSON.stringify(this.input_column_names));
         this.refresh_controls();
     }
 
     refresh_controls() {
-        let options = [["",""]];
+        let options = [];
         this.input_column_names.forEach(name => options.push([name,name]));
         if (this.client_service) {
             const s = JSON.stringify(options);
@@ -59,7 +64,7 @@ DataFrameExplorer.SelectColumnsNode = class {
 
     open_client(page_id, client_options, client_service) {
         this.client_service = client_service;
-        this.client_service.set_attributes("column_names",{"value":JSON.stringify(this.column_names)});
+        this.refresh_controls();
         this.client_service.add_event_handler("column_names","change", v => {
             this.column_names = JSON.parse(v);
             this.update_status();
@@ -71,20 +76,24 @@ DataFrameExplorer.SelectColumnsNode = class {
         this.client_service = null;
     }
 
-    reset_run() {
-        this.input_changed();
-    }
-
     async run(inputs) {
-        this.is_reset_run = false;
+        this.input_column_names = [];
         if (inputs["data_in"]) {
-            this.dataset = inputs["data_in"][0];
-            this.input_changed();
+            let input_query = inputs["data_in"][0];
+            await this.input_changed(input_query);
             if (this.valid()) {
-                return {"data_out": this.dataset.select(...this.column_names)};
+                let pyodide_config = this.node_service.get_configuration("visualtopology.pyodide");
+                let pyodide = await pyodide_config.get_pyodide();
+                let my_namespace = pyodide.toPy({ column_names: this.column_names, input_query: input_query });
+                let q = await pyodide.runPythonAsync(`      
+                    q = input_query.select_columns(column_names)
+                    q
+                `,{globals:my_namespace});
+                return {"data_out": q};
             }
+        } else {
+            return {};
         }
-        return undefined;
     }
 }
 

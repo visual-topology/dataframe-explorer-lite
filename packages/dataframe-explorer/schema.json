@@ -33,7 +33,7 @@
         },
         "default_language": "en"
     },
-    "resources": [ "https://cdn.jsdelivr.net/npm/arquero@4.8.6/dist/arquero.min.js", "configuration.js","nodes/aq_utils.js", "nodes/chart.js" ],
+    "resources": [ "configuration.js", "nodes/chart.js" ],
     "node_types": {
         "csv_import": {
             "metadata": {
@@ -54,43 +54,12 @@
                     "menu_label":"Open...",
                     "title": "CSV Import",
                     "url": "nodes/csv_import.html",
-                    "window_width": 500,
-                    "window_height": 300
+                    "window_width": 800,
+                    "window_height": 800
                 }
             },
             "classname": "DataFrameExplorer.CsvImportNode",
             "resources": ["nodes/csv_import.js"]
-        },
-        "data_retyper": {
-            "metadata": {
-                "name": "Data Retyper",
-                "description": "Inspect and change the column types"
-            },
-            "input_ports": {
-                "data_in": {
-                    "link_type": "dataframe_explorer:dataset"
-                }
-            },
-            "output_ports": {
-                "data_out": {
-                    "link_type": "dataframe_explorer:dataset"
-                }
-            },
-            "display": {
-                "corners": 7,
-                "icon": "icons/data_retyper.svg"
-            },
-            "pages": {
-                "default": {
-                    "menu_label":"Open...",
-                    "title": "Retype Columns",
-                    "url": "nodes/data_retyper.html",
-                    "window_width": 800,
-                    "window_height": 600
-                }
-            },
-            "classname": "DataFrameExplorer.DataRetyperNode",
-            "resources": ["nodes/data_retyper.js"]
         },
         "sample_rows": {
             "metadata": {

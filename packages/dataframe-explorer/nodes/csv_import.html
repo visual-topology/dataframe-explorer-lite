@@ -4,36 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-    <link href="../../../3pp/exo/exo-icons.css" rel="stylesheet" type="text/css">
-    <script src="../../../3pp/exo/exo.js" type="text/javascript"></script>
-    <link href="../../../3pp/exo/exo.css" rel="stylesheet" type="text/css">
-    <script src="../../../3pp/skadi/skadi-page.js" type="text/javascript"></script>
+    <link href="../../../skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+    <link href="../../../skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="../../../skadi/lib/exo/exo.js" type="text/javascript"></script>
+    <script src="../../../skadi/skadi-page.js" type="text/javascript"></script>
+    <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js" type="text/javascript"></script>
 </head>
 <body>
-    <input id="use_example" type="radio" name="upload_type"
-           value="example" checked="checked">
-    <label for="use_example" style="display:inline-block;">
-        <span class="label-body">
-            Select example dataset
-        </span>
-        <select id="select_example_dataset">
-            <option value="iris">Iris</option>
-            <option value="drug-use-by-age">Drug Use By Age</option>
-        </select>
-    </label>
-    <br>
-    <input id="use_custom" type="radio" name="upload_type" value="upload">
-    <label for="use_custom" style="display:inline-block;">
-        <span class="label-body">
-            Upload a new CSV file
-        </span>
-    </label>
-    <div id="upload_section" style="display:none;">
-        <p style="margin-left: 32px;">
-            <exo-file tooltip="Select a CSV formatted file from your computer to upload" button-text="Upload file" id="upload" filename="filename.csv"></exo-file>
-        </p>
+    <div class="exo-tabs">
+        <input aria-hidden="true" type="checkbox"
+             id="nm1">
+        <label aria-hidden="true" class="exo-tabs-open exo-button exo-icon exo-icon-medium exo-icon-menu"
+               for="nm1"></label>
+        <label aria-hidden="true" class="exo-tabs-close exo-button exo-rounded exo-icon exo-icon-medium exo-icon-clear"
+             for="nm1"></label>
+        <br>
+        <input aria-hidden="true" type="radio"
+             name="g2" id="ncontent-a1" checked="checked">
+        <label aria-hidden="true" class="exo-tabs-item exo-white-bg"
+             for="ncontent-a1" tabindex="-1">
+            Import Controls
+        </label>
+        <input aria-hidden="true" type="radio"
+             name="g2" id="ncontent-a2">
+        <label aria-hidden="true" class="exo-tabs-item exo-white-bg"
+             for="ncontent-a2" tabindex="-1">
+            Imported Columns
+        </label>
+
+        <div class="exo-tabs-content">
+            <section>
+               <exo-radio id="dataset_type" value="example", label="Select Dataset",
+                                 options='[["example","Use Example Dataset"],["custom","Upload New Dataset"]]'
+                          tooltip="Use one of the packaged example data files or upload your own data"></exo-radio>
+
+                <div id="example_section" style="display:none;">
+                    <p>
+                        <exo-select label="Pick an Example Dataset" id="select_example_dataset"></exo-select>
+                    </p>
+                </div>
+
+                <div id="upload_section" style="display:none;">
+                    <p style="margin-left: 32px;">
+                        <exo-file tooltip="Select a CSV formatted file from your computer to upload" button-text="Upload file" id="upload"></exo-file>
+                    </p>
+                    <fieldset><legend>Options</legend><div class="exo-row">
+                        <div class="exo-2-cell">
+                            <exo-checkbox id="has_headers" label="Has Headers"
+                                value="true" tooltip="Select this option if the CSV file has a header line with column names"/>
+                        </div>
+                    </div>
+                    <div class="exo-row">
+                        <div class="exo-2-cell">
+                            <exo-radio id="date_format" label="Date Format"
+                                value="auto" options='[["auto","Auto"],["custom","Custom"]]', tooltip="Either auto recognise dates or use a custom format"/>
+                        </div>
+                        <div class="exo-2-cell" id="custom_date_format_cell" style="display:none;">
+                            <exo-text id="custom_date_format" label="Custom Date Format"
+                                value="" tooltip="Provide a custom date format"/>
+                        </div>
+                    </div>
+                    <div class="exo-row">
+                        <div class="exo-2-cell">
+                            <exo-radio id="delimiter" label="Delimiter" value="csv"
+                                 options='[["comma","Comma"],["custom","Custom"]]'
+                                 tooltip="Control the delimiter"/>
+                        </div>
+                        <div class="exo-2-cell" id="custom_delimiter_cell" style="display:none;">
+                            <exo-text id="custom_delimiter" label="Custom Delimiter"
+                                value="," tooltip="Provide a custom delimiter character"/>
+                        </div>
+                    </div></fieldset>
+                </div>
+            </section>
+            <section>
+                <div id="table_container">
+                </div>
+            </section>
+        </div>
     </div>
     <script>
+
         window.addEventListener("load", evt => {
            let upload = document.getElementById("upload");
            upload.addEventListener("exo-file-changed", (evt) => {
@@ -43,7 +96,43 @@
                    f.text().then(text => {
                        skadi.page.send_message({"filename": filename}, text);
                    });
+                   upload.setAttribute("filename",filename);
+                   break;
                }
+            });
+
+           var dataset = undefined;
+           var columns = undefined;
+
+            function render_table() {
+                let elt = document.getElementById("table_container");
+                elt.innerHTML = "<table id=\"table_content\" class=\"display\" width=\"100%\"></table>";
+                if (dataset && columns) {
+                    let cols = [];
+                    for(let idx=0; idx<columns.length; idx++) {
+                        cols.push({"title":columns[idx]});
+                    }
+                    new DataTable('#table_content', {
+                        order: [],
+                        columns: cols,
+                        data: dataset
+                    });
+                }
+            }
+
+            skadi.page.set_message_handler((msg) => {
+                if ("data" in msg) {
+                    dataset = msg.data;
+                    columns = msg.columns;
+                } else {
+                    dataset = undefined;
+                    columns = undefined;
+                }
+                render_table();
+            });
+
+            window.addEventListener("resize",(evt) => {
+                render_table();
             });
         });
     </script>

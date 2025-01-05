@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title id="title">Skadi - </title>
+
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+        <link href="skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+        <link href="skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+        <script src="skadi/lib/exo/exo.js"></script>
+
+        <script src="skadi/lib/zip/zip.min.js"></script>
+
+        <script src="skadi/skadi-designer.js" type="application/ecmascript" charset="utf-8"></script>
+        <link rel="styleSheet" href="skadi/skadi-designer.css" type="text/css">
+
+        <script>
+            window.addEventListener("load",async (evt) => {
+                let url_params = new URLSearchParams(window.location.search);
+                let topology_id = url_params.get("topology_id");
+                if (!topology_id) {
+                    // redirect to directory to select or create a topology
+                    window.location.replace("skadi-directory.html");
+                }
+
+                let options = await fetch("options.json");
+                options = await options.json();
+                let plugins = {};
+                let designer = await skadi.start_designer(topology_id, "skadi_container", options, plugins);
+                setTimeout(() => {
+                    document.getElementById("splash_screen").setAttribute("display","false");
+                },1000);
+            });
+
+        </script>
+        <link rel="icon" type="image/svg" href="skadi/images/skadi.svg">
+    </head>
+    <body>
+        <div id="splash_screen" is="exo-modal" display="true"
+             bg-color="light-gray" border-color="dark-purple" style="width:50%; height:50%;">
+            <h1>
+                Skadi Topology Designer
+            </h1>
+            <p>
+                <img src="skadi/images/skadi.svg">
+                Loading...
+            </p>
+        </div>
+        <div id="skadi_container">
+        </div>
+    </body>
+</html>

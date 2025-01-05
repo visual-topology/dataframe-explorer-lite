@@ -1,0 +1,60 @@
+/* src/css/directory.css */
+.treeselect {
+    width: 16px !important;
+    height: 16px !important;
+    min-height: 16px !important;
+    vertical-align: middle;
+    float:right;
+    appearance: auto !important;
+}
+
+.treeicon {
+    width: 24px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.open_link {
+    margin-left: 20px;
+}
+
+.skadi_metadata_table {
+    border: none;
+}
+
+.skadi_metadata_table tr,td {
+    border: none;
+}
+
+
+
+/* src/css/common.css */
+.skadi_header {
+    background-color: #DDD;
+    min-height: 40px;
+}
+
+.skadi_header_title {
+    display: inline;
+    margin-left: 20px;
+    font-size: 32px;
+}
+
+.skadi_header_icon {
+    height: 32px;
+    margin-top: 4px;
+    margin-right: 20px;
+}
+
+.skadi_header_right {
+    float: right;
+}
+
+.skadi_header_link {
+    vertical-align: top;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+
+

@@ -1,0 +1,28 @@
+{
+    "id": "visualtopology.pyodide",
+    "metadata": {
+        "name": "Pyodide Package",
+        "version": "0.0.1",
+        "description": "A Visual Topology Package wrapping Pyodide",
+        "link": "about.html"
+    },
+    "display": {
+        "style": "fill:lightgrey;"
+    },
+
+    "configuration": {
+        "classname": "PyodideConfiguration",
+        "pages": {
+            "default": {
+                "button_label": "Configure...",
+                "title": "Pyodide Configuration",
+                "url": "configuration.html"
+            }
+        }
+    },
+    "resources": ["configuration.js"],
+    "node_types": {
+    },
+    "link_types": {
+    }
+}

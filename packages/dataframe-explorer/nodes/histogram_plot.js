@@ -26,9 +26,9 @@ DataFrameExplorer.HistogramPlotNode = class extends DataFrameExplorer.ChartNode 
     set custom_band_width(v) { this.node_service.set_property("custom_band_width",v); }
 
     valid() {
-        let column_names = this.get_input_dataset().columnNames();
+        let column_names = this.dataset.columns;
         if (column_names.includes(this.x_axis)) {
-            if (this.hue == "" || column_names.includes(this.hue)) {
+            if (this.hue === "" || column_names.includes(this.hue)) {
                 return true;
             }
         }
@@ -37,8 +37,8 @@ DataFrameExplorer.HistogramPlotNode = class extends DataFrameExplorer.ChartNode 
 
     refresh_controls() {
         let column_names = [];
-        if (this.get_input_dataset()) {
-            column_names = this.get_input_dataset().columnNames();
+        if (this.dataset) {
+            column_names = this.dataset.columns;
         }
         this.set_selector_options("x_axis", column_names);
         this.set_selector_options("hue", column_names);
@@ -48,7 +48,7 @@ DataFrameExplorer.HistogramPlotNode = class extends DataFrameExplorer.ChartNode 
         super.upload();
         let spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "data": { "format": {"type": "csv"} },
+            "data": {"format": {"type": "json"}},
             "mark": "bar",
             "padding": 20,
             "autosize": {
@@ -88,7 +88,7 @@ DataFrameExplorer.HistogramPlotNode = class extends DataFrameExplorer.ChartNode 
     }
 
     open_client(page_id, client_options, client_service) {
-        this.client_service = client_service;
+        super.open_client(page_id, client_options, client_service);
         this.client_service.set_attributes("use_custom",{"value":""+this.use_custom_settings});
         this.client_service.add_event_handler("use_custom","change", (v) => {
             this.use_custom_settings = v;
@@ -100,7 +100,6 @@ DataFrameExplorer.HistogramPlotNode = class extends DataFrameExplorer.ChartNode 
             this.custom_band_width = Number.parseFloat(v);
             super.redraw();
         });
-        return result;
     }
 }
 

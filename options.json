@@ -1,7 +1,8 @@
 {
-  "schema_urls": ["packages/dataframe-explorer/schema.json"],
-  "title": "Dataframe Explorer - Visual Topology Lite Application",
+  "schema_urls": [ "packages/pyodide/schema.json", "packages/dataframe-explorer/schema.json"],
+  "title": "Dataframe Explorer - Skadi Application",
   "canvas_height": 2000,
   "canvas_width": 4000,
-  "workspace": "dataframe_explorer"
+  "workspace": "dataframe_explorer",
+  "worker_path": "skadi/skadi-worker.js"
 }

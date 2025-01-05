@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Skadi Directory</title>
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <link href="skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+    <link href="skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+    <script src="skadi/lib/exo/exo.js"></script>
+
+    <script src="skadi/skadi-directory.js"></script>
+    <link rel="styleSheet" href="skadi/skadi-directory.css" type="text/css">
+
+    <link rel="icon" type="image/svg" href="skadi/images/skadi.svg">
+    <script>
+        window.addEventListener("load", async (evt) => {
+
+            let options = await fetch("options.json");
+            options = await options.json();
+
+            let directory_api = new skadi.DirectoryApi("root_element", options);
+
+            directory_api.set_open_topology_in_designer_handler((topology_id) => {
+                window.open("skadi-designer.html?topology_id=" + topology_id, "_self")
+            });
+
+            await directory_api.load();
+        });
+    </script>
+</head>
+<body class="exo-container-narrow">
+    <h2>Skadi - Directory</h2>
+    <hr>
+    <div id="root_element"></div>
+</body>
+</html>

@@ -21,15 +21,15 @@ DataFrameExplorer.Histogram2DPlotNode = class extends DataFrameExplorer.ChartNod
 
     refresh_controls() {
         let column_names = [];
-        if (this.get_input_dataset()) {
-            column_names = this.get_input_dataset().columnNames();
+        if (this.dataset) {
+            column_names = this.dataset.columns;
         }
         this.set_selector_options("x_axis", column_names);
         this.set_selector_options("y_axis", column_names);
     }
 
     valid() {
-        let column_names = this.get_input_dataset().columnNames();
+        let column_names = this.dataset.columns;
         if (column_names.includes(this.x_axis) && column_names.includes(this.y_axis)) {
             return true;
         }
@@ -41,7 +41,7 @@ DataFrameExplorer.Histogram2DPlotNode = class extends DataFrameExplorer.ChartNod
         let spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
             "description": "A 2D Histogram.",
-            "data": {"format": {"type": "csv"}},
+            "data": {"format": {"type": "json"}},
             "mark": "rect",
             "padding": 20,
             "autosize": {

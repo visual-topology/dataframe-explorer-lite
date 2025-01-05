@@ -18,7 +18,15 @@ function plot() {
         let w = r.width;
         spec.width = w;
         spec.height = h - 40;
-        spec.data.values = dataset;
+        let rows = [];
+        for(let ridx=0; ridx<dataset.data.length; ridx++) {
+            let row = {};
+            for(let cidx=0; cidx<dataset.columns.length; cidx++) {
+                row[dataset.columns[cidx]] = dataset.data[ridx][cidx];
+            }
+            rows.push(row);
+        }
+        spec.data.values = rows;
         vegaEmbed(vizdiv, spec, {
             "theme": theme,
             "defaultStyle": false,

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title id="title">Skadi - </title>
+
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+        <link href="skadi/lib/exo/exo.css" rel="stylesheet" type="text/css">
+        <link href="skadi/lib/exo/exo-icons.css" rel="stylesheet" type="text/css">
+        <script src="skadi/lib/exo/exo.js"></script>
+
+        <script src="skadi/lib/zip/zip.min.js"></script>
+
+        <script src="skadi/skadi-application.js" type="application/ecmascript" charset="utf-8"></script>
+
+        <link rel="styleSheet" href="skadi/skadi-application.css" type="text/css">
+
+        <script>
+            window.addEventListener("load",async (evt) => {
+                let options = await fetch("options.json");
+                options = await options.json();
+                let app = await skadi.start_application("test_topology", options);
+
+                document.getElementById("upload_topology").addEventListener("exo-file-changed", async evt => {
+                    let filename = Object.keys(evt.detail)[0];
+                    let file = evt.detail[filename];
+                    let node_renamings = {};
+                    await app.load_from_file(file, node_renamings);
+                    let cell_width = Number.parseInt(document.getElementById("cell_width").value);
+                    let cell_height = Number.parseInt(document.getElementById("cell_height").value);
+                    app.auto_tile("skadi_configuration_container","skadi_node_container",cell_width, cell_height);
+                });
+
+                setTimeout(() => {
+                    document.getElementById("splash_screen").setAttribute("display","false");
+                },1000);
+
+            });
+
+        </script>
+        <link rel="icon" type="image/svg" href="skadi/images/skadi.svg">
+    </head>
+
+    <body>
+        <div id="splash_screen" is="exo-modal" display="true"
+             bg-color="light-gray" border-color="dark-purple" style="width:50%; height:50%;">
+            <h1>
+                Skadi Application
+            </h1>
+            <p>
+                <img src="skadi/images/skadi.svg">
+                Loading...
+            </p>
+        </div>
+        <div class="exo-row">
+            <div class="exo-2-cell">
+                <exo-file id="upload_topology" label="Upload topology" button-text="Choose File" filename="topology.zip"></exo-file>
+            </div>
+            <div class="exo-2-cell">
+                <exo-number id="cell_width" label="Cell width (pixels)" value="512"></exo-number>
+            </div>
+            <div class="exo-2-cell">
+                <exo-number id="cell_height" label="Cell height (pixels)" value="512"></exo-number>
+            </div>
+        </div>
+        <div id="skadi_configuration_container">
+        </div>
+        <div id="skadi_node_container">
+        </div>
+    </body>
+</html>
